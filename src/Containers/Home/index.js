@@ -1,10 +1,5 @@
-import ImportFormDialog from "Components/ImportFormDialog";
-import Navbar from "Components/Navbar";
-import SideBar from "Components/SideBar";
-import Playground from "Containers/PlayGround";
-import useAppContext from "hooks/useAppContext";
-import HomePageLayout from "layouts/HomePageLayout";
-import { useCallback, useMemo, useState } from "react";
+import QueryEditor from "Components/QueryEditor";
+import { useRef} from "react";
 
 /**
  * Home Component
@@ -13,54 +8,25 @@ import { useCallback, useMemo, useState } from "react";
  * for different routes,  devices etc.
  */
 const Home = () => {
-  // Sidebar State to toggle drawer
-  const [showDrawer, setShowDrawer] = useState(true);
-  const toggleDrawerState = useCallback(() => {
-    setShowDrawer((show) => !show);
-  }, [setShowDrawer]);
+  const runQueryFunc = useRef(null)
+  
+  const runQuery = () => {
+    if(runQueryFunc.current === null) {
+      return;
+    }
 
-  // State to toggle Import Data Dialog
-  const [showImportDialog, setShowImportDialog] = useState(false);
+    console.log('Running Current Query!')
 
-  const toggleImportDialogState = () => {
-    setShowImportDialog((val) => !val);
-  };
-
-  const handleImportDialogSuccess = () => {
-    setShowImportDialog((val) => !val);
-  };
-
-  // hook to fetch data from context
-  const { tablesData } = useAppContext();
-
-  // creates list of sidebars items to be shown
-  // returns Array of tables metadata info
-  const sideBarItems = useMemo(
-    () =>
-      Object.keys(tablesData).map(
-        (tableName) => tablesData[tableName].metaData
-      ),
-    [tablesData]
-  );
+    runQueryFunc.current();
+  }
 
   return (
-    <HomePageLayout
-      navBar={
-        <Navbar
-          onMenuButtonClick={toggleDrawerState}
-          onImportButtonClick={toggleImportDialogState}
-        />
-      }
-      sideBar={<SideBar showDrawer={showDrawer} items={sideBarItems} />}
-    >
-      {/* Content  for the Home page*/}
-      <Playground />
-      <ImportFormDialog
-        showDialog={showImportDialog}
-        handleCancelAction={toggleImportDialogState}
-        handleSuccessAction={handleImportDialogSuccess}
-      />
-    </HomePageLayout>
+    <>
+      <QueryEditor onRunQuery={() => {}} runQueryFunctionRef={runQueryFunc}/>
+
+      <button onClick={runQuery}>Run Query</button>
+    </>
+    
   );
 };
 

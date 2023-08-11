@@ -35,8 +35,6 @@ const HomePageLayout = ({ children, navBar, sideBar }) => {
       <Box component="main" className={clsx(classes.mainContainer)}>
         <Toolbar />
         <Box className={classes.page}>
-          {/* SideBar goes here */}
-          {sideBar}
           <Box className={classes.contentArea}>
             {/* Content goes here */}
             {children}

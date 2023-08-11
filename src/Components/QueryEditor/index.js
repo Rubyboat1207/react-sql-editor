@@ -8,7 +8,6 @@ import PropTypes from "prop-types";
 import { DEFAULT_STRINGS, noop } from "utils/constants/common";
 import { TOAST_ERROR, TOAST_SUCCESS } from "utils/constants/ToastConstants";
 import { v4 as uuid } from "uuid";
-import EditorControls from "./EditorControls";
 import EditorLoader from "./EditorLoader";
 
 // Lazy loading Editor
@@ -27,10 +26,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const QueryEditor = ({ onRunQuery = noop }) => {
+const QueryEditor = ({ onRunQuery = noop, runQueryFunctionRef}) => {
   const classes = useStyles();
 
-  const { currentQuery, handleQueryChange, editorTabs, updateEditorTabs } =
+  const { currentQuery, handleQueryChange } =
     useActiveQueryEditor();
   const { isToastVisible, showToast, toastType, toastMessage } = useToast();
 
@@ -43,13 +42,10 @@ const QueryEditor = ({ onRunQuery = noop }) => {
     showToast(TOAST_SUCCESS, "Query Ran Successfully");
   };
 
+  runQueryFunctionRef.current = handleRunQuery;
+
   return (
     <Box>
-      <EditorControls
-        editorTabs={editorTabs}
-        updateEditorTabs={updateEditorTabs}
-        onRunQuery={handleRunQuery}
-      />
       <Suspense fallback={<EditorLoader />}>
         <LazyEditor
           aria-label="query editor input"
